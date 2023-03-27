@@ -1,0 +1,32 @@
+﻿@using Paup_2023.Models
+@model StudentiDB
+@{
+    ViewBag.Title = "Popis";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Popis</h2>
+
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Prezime</th>
+        <th>Ime</th>
+        <th>Oib</th>
+        <th>Redovni</th>
+        <th>Detalji</th>
+        <th>Ažuriranje</th>
+    </tr>
+    @foreach (var student in Model.VratiListu())
+        {
+     <tr>
+         <td>@student.Id</td>
+         <td>@student.Prezime</td>
+         <td>@student.Ime</td>
+         <td>@student.Oib</td>
+         <td>@Html.CheckBox("chbRedovan", student.RedovanStudent)</td>
+         <td>@Html.ActionLink("Info", "Detalji", new { id = student.Id })</td>
+         <td>@Html.ActionLink("Ažuriraj", "Azuriraj", new { id = student.Id })</td>
+     </tr>
+        }
+</table>

@@ -1,0 +1,16 @@
+﻿
+@{
+    //ViewBag.Title = "Index"; //Zakomentirali smo ovu liniju
+    // kako bi naziv stranice bio onaj koji smo definirali u
+    // controlleru Studenti
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>PAUP Vježba 3</h2>
+
+Aplikacija o studentima
+<br />
+Fakultet: @ViewBag.Fakultet
+<br />
+
+Popis studenata @Html.ActionLink("link", "Popis")
