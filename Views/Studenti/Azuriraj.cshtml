@@ -14,6 +14,7 @@
     Html.AntiForgeryToken() - mehanizam koji nas štiti od cross site request
     forgery napada (poziva HTTP POST metodu izvan naše aplikacije)
     *@
+    @Html.ValidationSummary(true, "Ispravite podatke!");
     @Html.AntiForgeryToken()
 <table>
     <tr>
@@ -98,7 +99,7 @@
         </td>
     </tr>
 </table>
-@Html.ValidationSummary(true, "Spremanje nije uspjelo!");
+@Html.ValidationSummary(false, "Spremanje nije uspjelo!");
 <p>
     <input type="submit" value="Spremi" />
 </p>

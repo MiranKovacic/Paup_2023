@@ -23,7 +23,7 @@ namespace Paup_2023.Models
         [Display(Name = "Spol")]
         [Required(ErrorMessage = "{0} je obavezan")]
         public char Spol { get; set; }
-        [Display(Name = "OIB")]
+        [Display(Name = "Oib")]
         [Required(ErrorMessage = "{0} je obavezan")]
         [StringLength(11, MinimumLength = 11, ErrorMessage =
         "{0} mora biti duljine {1} znakova")]

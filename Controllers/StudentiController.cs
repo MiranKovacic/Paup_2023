@@ -94,6 +94,10 @@ namespace Paup_2023.Controllers
         // tj, poziv post metoda izvan naše aplikacije
         public ActionResult Azuriraj(Student s)
         {
+            if (!OIB.CheckOIB(s.Oib)) //provjera oib-a
+            {
+                ModelState.AddModelError("Oib", "Neispravan OIB");
+            }
             // ModelState.Isvalid - provjera ispravnosti podataka
             //npr. ako je atribut int tipa a mi smo unjeli string
             //u to polje na formi, neće proći validaciju i 
