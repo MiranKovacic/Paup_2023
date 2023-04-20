@@ -40,14 +40,16 @@ namespace Paup_2023.Controllers
                 return RedirectToAction("Popis");
             }
             //instanciramo klasu StudentDB koja sadržava listu studenata
-            StudentiDB studentidb = new StudentiDB();
+            //StudentiDB studentidb = new StudentiDB();
             /*
              * sa objekta studentidb pozivamo metodu VratiListu() koja nam vraća
              * listu studenata pomoću Lambada izraza FirstOrDefault( x=> x.Id == id)
              * dohvaćamo prvog elementa iz liste kojemu se vrijednost propertyja Id
              * podudara sa vrijednošću parametra id
              */
-            Student student = studentidb.VratiListu().FirstOrDefault(x => x.Id == id);
+            //Student student = studentidb.VratiListu().FirstOrDefault(x => x.Id == id);
+            Student student = bazaPodataka.PopisStudenata.
+                FirstOrDefault(x => x.Id == id);
             //ako u listi nema studenta sa traženim Id-jem onda je varijabla student NULL
             if (student == null)
             {
@@ -71,13 +73,15 @@ namespace Paup_2023.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //instanciramo klasu StudentDB koja sadržava listu studenata
-            StudentiDB studentidb = new StudentiDB();
+            //StudentiDB studentidb = new StudentiDB();
+            Student student = bazaPodataka.PopisStudenata.
+                FirstOrDefault(x => x.Id == id);
             /*
              * pomoću Lambada izraza FirstOrDefault( x=> x.Id == id)
              * dohvaćamo prvog elementa iz liste kojemu se vrijednost propertyja Id
              * podudara sa vrijednošću parametra id
              */
-            Student student = studentidb.VratiListu().FirstOrDefault(x => x.Id == id);
+            //Student student = studentidb.VratiListu().FirstOrDefault(x => x.Id == id);
             //ako u listi nema studenta sa traženim Id-jem onda je varijabla student NULL
             if (student == null)
             {
@@ -108,8 +112,10 @@ namespace Paup_2023.Controllers
             if (ModelState.IsValid)
             {
                 // Ažuriranje liste podataka
-                StudentiDB studentidb = new StudentiDB();
-                studentidb.AzurirajStudenta(s);
+                //StudentiDB studentidb = new StudentiDB();
+                //studentidb.AzurirajStudenta(s);
+                bazaPodataka.Entry(s).State = System.Data.Entity.EntityState.Modified;
+                bazaPodataka.SaveChanges();
                 // preusmjeravanje na metodu koja vraća popis studenata
                 return RedirectToAction("Popis");
             }
