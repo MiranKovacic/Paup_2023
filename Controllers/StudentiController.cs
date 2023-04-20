@@ -10,6 +10,7 @@ namespace Paup_2023.Controllers
 {
     public class StudentiController : Controller
     {
+        BazaDbContext bazaPodataka = new BazaDbContext();
         // GET: Studenti
         public ActionResult Index()
         {
@@ -22,10 +23,11 @@ namespace Paup_2023.Controllers
         {
             //Instanciramo klasu StudentiDB koaj sadržava
             // listu studenata
-            StudentiDB studentidb = new StudentiDB();
+            //StudentiDB studentidb = new StudentiDB();
             //objekt studentdb klase StudentDB prosljeđujemo
             // kao njegov model
-            return View(studentidb);
+            var studenti = bazaPodataka.PopisStudenata.ToList();
+            return View(studenti);
         }
 
         //int? definiramo da parametar id može biti nullabilan

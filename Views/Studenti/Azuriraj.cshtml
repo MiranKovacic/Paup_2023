@@ -50,8 +50,8 @@
                 prvi argument je atribut modela (model => model.Spol)
                 dok je drugi vrijednos 'M', nakon helpera je vrijednost
                 koja se prikazuje korisniku*@
-            @Html.RadioButtonFor(model => model.Spol, 'M') Muški
-            @Html.RadioButtonFor(model => model.Spol, 'Z') Ženski
+            @Html.RadioButtonFor(model => model.Spol, "M") Muški
+            @Html.RadioButtonFor(model => model.Spol, "Z") Ženski
             @Html.ValidationMessageFor(model => model.Spol)
         </td>
     </tr>
