@@ -19,14 +19,14 @@ namespace Paup_2023.Controllers
             return View();
         }
         
-        public ActionResult Popis()
+        public ActionResult Popis(string naziv, string spol)
         {
-            //Instanciramo klasu StudentiDB koaj sadržava
-            // listu studenata
-            //StudentiDB studentidb = new StudentiDB();
-            //objekt studentdb klase StudentDB prosljeđujemo
-            // kao njegov model
             var studenti = bazaPodataka.PopisStudenata.ToList();
+            //filtriranje
+            if (!String.IsNullOrWhiteSpace(naziv))
+                studenti = studenti.Where(x => x.PrezimeIme.ToUpper().Contains(naziv.ToUpper())).ToList();
+            if (!String.IsNullOrWhiteSpace(spol))
+                studenti = studenti.Where(x => x.Spol == spol).ToList();
             return View(studenti);
         }
 
@@ -65,31 +65,24 @@ namespace Paup_2023.Controllers
         //Primjer pozivanja /Student/Azuriraj/2
         public ActionResult Azuriraj(int? id)
         {
-            //provjerimo dal id ima vrijednost, tj ako on nije difiniran
+            Student student = null;
             if (!id.HasValue)
             {
-                //Vracamo HTTP status 400
-                //Lista HTTP statusnih kodova: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                student = new Student();
+                ViewBag.Title = "Kreiranje studenta";
+                ViewBag.Novi = true;
             }
-            //instanciramo klasu StudentDB koja sadržava listu studenata
-            //StudentiDB studentidb = new StudentiDB();
-            Student student = bazaPodataka.PopisStudenata.
-                FirstOrDefault(x => x.Id == id);
-            /*
-             * pomoću Lambada izraza FirstOrDefault( x=> x.Id == id)
-             * dohvaćamo prvog elementa iz liste kojemu se vrijednost propertyja Id
-             * podudara sa vrijednošću parametra id
-             */
-            //Student student = studentidb.VratiListu().FirstOrDefault(x => x.Id == id);
-            //ako u listi nema studenta sa traženim Id-jem onda je varijabla student NULL
-            if (student == null)
+            else
             {
-                //vratimo NotFound
-                //return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-                return HttpNotFound();
+                student = bazaPodataka.PopisStudenata.
+                    FirstOrDefault(x => x.Id == id);
+                if (student == null)
+                {
+                    return HttpNotFound();
+                }
+                ViewBag.Title = "Ažuriranje potaka o studentu";
+                ViewBag.Novi = false;
             }
-            //objekt student klase Student prosljeđujemo u View kao njegov model
             return View(student);
         }
 
@@ -111,16 +104,69 @@ namespace Paup_2023.Controllers
             // ispisati grešku validacije
             if (ModelState.IsValid)
             {
-                // Ažuriranje liste podataka
-                //StudentiDB studentidb = new StudentiDB();
-                //studentidb.AzurirajStudenta(s);
-                bazaPodataka.Entry(s).State = System.Data.Entity.EntityState.Modified;
+                //ako je id u objektu s različit od 0 radi se o ažurianju studenta
+                if (s.Id != 0)
+                {
+                    bazaPodataka.Entry(s).State = System.Data.Entity.EntityState.Modified;
+                }
+                // ako je id 0 znači da id još nije dodjeljen te znamo da moramo
+                // dodati objekt s u listu studenata u bazi
+                else
+                {
+                    bazaPodataka.PopisStudenata.Add(s);
+                }
                 bazaPodataka.SaveChanges();
                 // preusmjeravanje na metodu koja vraća popis studenata
                 return RedirectToAction("Popis");
             }
+            if (s.Id == 0)
+            {
+                ViewBag.Title = "Kreiranje studenta";
+                ViewBag.Novi = true;
+            }
+            else
+            {
+                ViewBag.Title = "Ažuriranje podataka o studentu";
+                ViewBag.Novi = false;
+            }
             // ako model nije ispravan onda ga vraćamo kljentu
             return View(s);
+        }
+
+        //Brisanje studenta
+        //GET metoda
+        // Primjer poziva: .../Brisi/2
+        public ActionResult Brisi(int? id)
+        {
+            //ako id nije definiran preusmjerimo korisnika na popis studenata
+            if (id == null)
+            {
+                return RedirectToAction("Popis");
+            }
+            Student s = bazaPodataka.PopisStudenata.
+                FirstOrDefault(x => x.Id == id);
+            //ako ne postoji student s tim id-em onda vraćamo HTTP status Not found
+            if (s == null)
+            {
+                return HttpNotFound();
+            }
+            return View(s);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //Brisanje studenta
+        //POST metada koju poziva forma za potvrdu brisanja
+        public ActionResult Brisi(int id)
+        {
+            Student s = bazaPodataka.PopisStudenata.
+                FirstOrDefault(x => x.Id == id);
+            if (s == null)
+            {
+                return HttpNotFound();
+            }
+            bazaPodataka.PopisStudenata.Remove(s);
+            bazaPodataka.SaveChanges();
+            return View("BrisiStatus");
         }
     }
 }

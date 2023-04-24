@@ -23,6 +23,15 @@ namespace Paup_2023.Models
         [StringLength(30, MinimumLength = 2, ErrorMessage =
         "{0} mora biti duljine minimalno {2} a maksimalno {1} znakova")]
         public string Prezime { get; set; }
+
+        public string PrezimeIme
+        {
+            get
+            {
+                return Prezime + " " + Ime;
+            }
+        }
+
         [Display(Name = "Spol")]
         [Required(ErrorMessage = "{0} je obavezan")]
         public string Spol { get; set; }
