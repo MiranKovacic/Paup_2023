@@ -150,6 +150,7 @@ namespace Paup_2023.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.Title = "Potvrda brisanja studenta";
             return View(s);
         }
         [HttpPost]

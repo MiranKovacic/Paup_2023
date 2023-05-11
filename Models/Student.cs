@@ -48,9 +48,13 @@ namespace Paup_2023.Models
         public DateTime DatumRodjenja { get; set; }
         [Column("godina_studija")]
         [Display(Name = "Godina studija")]
+        [Range(1, 5, ErrorMessage ="Vrijednost {0} mora biti između {1} i {2}")]
         public GodinaStudija GodinaStudija { get; set; }
         [Column("redovni_student")]
         [Display(Name = "Redovan student")]
         public bool RedovanStudent { get; set; }
+        [Column("broj_upisanih_kolegija")]
+        [Display(Name = "Broj upisanih kolegija")]
+        public int BrojUpisanihKolegija { get; set; }
     }
 }
