@@ -56,5 +56,10 @@ namespace Paup_2023.Models
         [Column("broj_upisanih_kolegija")]
         [Display(Name = "Broj upisanih kolegija")]
         public int BrojUpisanihKolegija { get; set; }
+        [Display(Name = "Smjer")]
+        [Column("smjer_sifra")]
+        [ForeignKey("UpisaniSmjer")]
+        public string SifraSmjer { get; set; }
+        public virtual Smjer UpisaniSmjer { get; set; }
     }
 }

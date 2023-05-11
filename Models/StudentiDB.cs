@@ -11,6 +11,7 @@ namespace Paup_2023.Models
     public class BazaDbContext: DbContext
     {
         public DbSet<Student> PopisStudenata { get; set; }
+        public DbSet<Smjer> PopisSmjerova { get; set; }
     }
 
     public class StudentiDB

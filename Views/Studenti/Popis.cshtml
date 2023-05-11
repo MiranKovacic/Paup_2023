@@ -16,6 +16,9 @@
 @using (Html.BeginForm("Popis", "Studenti", FormMethod.Get, new { @class = "form-inline" }))
 {
     @Html.TextBox("naziv", "", new { @class = "form-control", placeholder = "Naziv studenta" })
+    @Html.DropDownList("Smjer",
+    new SelectList(ViewBag.Smjerovi, "Sifra", "Naziv", ""), "Svi Smjerovi",
+    new { @class= "form-control", style= "margin-left: 10px;" })
     <div class="form-control" style="margin-left: 10px;">
         <label class="radio-inline">
             @Html.RadioButton("spol", "M") Muški
@@ -27,7 +30,6 @@
             @Html.RadioButton("spol", "") Svi
         </label>
     </div>
-
     <button type="submit" class="btn btn-primary">
         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
         Traži
@@ -42,6 +44,7 @@
             <th>Prezime</th>
             <th>Ime</th>
             <th>Oib</th>
+            <th>Smjer</th>
             <th>Redovni</th>
             <th>Akcije</th>
         </tr>
@@ -52,6 +55,7 @@
                 <td>@student.Prezime</td>
                 <td>@student.Ime</td>
                 <td>@student.Oib</td>
+                <td>@(student.UpisaniSmjer?.Naziv)</td>
                 <td>@Html.CheckBox("chbRedovan", student.RedovanStudent)</td>
                 <td>@Html.ActionLink("Info", "Detalji", new { id = student.Id }, new { @class = "btn btn-info btn-sm" })</td>
                 <td>@Html.ActionLink("Ažuriraj", "Azuriraj", new { id = student.Id }, new { @class = "btn btn-warning btn-sm" })</td>
