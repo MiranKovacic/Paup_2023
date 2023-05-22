@@ -3,6 +3,13 @@
 @{
     ViewBag.Title = "Popis";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    AjaxOptions ajaxOpt = new AjaxOptions()
+    {
+        UpdateTargetId = "popisStudenata",
+        InsertionMode = InsertionMode.Replace,
+        HttpMethod = "GET",
+        OnBegin = "LoadingRow"
+    };
 }
 
 <h2>Popis studenata</h2>
@@ -13,12 +20,12 @@
 <br />
 <br />
 
-@using (Html.BeginForm("Popis", "Studenti", FormMethod.Get, new { @class = "form-inline" }))
+@using (Ajax.BeginForm("PopisPartial", "Studenti", ajaxOpt, new { @class = "form-inline", id = "formPopisStudenata" }))
 {
     @Html.TextBox("naziv", "", new { @class = "form-control", placeholder = "Naziv studenta" })
     @Html.DropDownList("Smjer",
     new SelectList(ViewBag.Smjerovi, "Sifra", "Naziv", ""), "Svi Smjerovi",
-    new { @class= "form-control", style= "margin-left: 10px;" })
+    new { @class = "form-control", style = "margin-left: 10px;" })
     <div class="form-control" style="margin-left: 10px;">
         <label class="radio-inline">
             @Html.RadioButton("spol", "M") Muški
@@ -36,35 +43,18 @@
     </button>
 }
 
-@if (Model.Count > 0)
-{
-    <table border="1">
-        <tr>
-            <th>Id</th>
-            <th>Prezime</th>
-            <th>Ime</th>
-            <th>Oib</th>
-            <th>Smjer</th>
-            <th>Redovni</th>
-            <th>Akcije</th>
-        </tr>
-        @foreach (var student in Model)
-        {
-            <tr>
-                <td>@student.Id</td>
-                <td>@student.Prezime</td>
-                <td>@student.Ime</td>
-                <td>@student.Oib</td>
-                <td>@(student.UpisaniSmjer?.Naziv)</td>
-                <td>@Html.CheckBox("chbRedovan", student.RedovanStudent)</td>
-                <td>@Html.ActionLink("Info", "Detalji", new { id = student.Id }, new { @class = "btn btn-info btn-sm" })</td>
-                <td>@Html.ActionLink("Ažuriraj", "Azuriraj", new { id = student.Id }, new { @class = "btn btn-warning btn-sm" })</td>
-                <td>@Html.ActionLink("Izbriši", "Brisi", new { id = student.Id }, new { @class = "btn btn-danger btn-sm" })</td>
-            </tr>
-        }
-    </table>
+<br />
+@{
+    Html.RenderAction("PopisPartial", new { naziv = "", spol = "", smjerovi = "" });
 }
-else
-{
-    <p>Nema rezultata pretrage.</p>
+@section Scripts{
+    <script type="text/javascript">
+        function LoadingRow() {
+            $("#tableStudenti tbody").empty();
+
+            $("#tableStudenti tbody").append('<tr><td colspan="7" style="text-align: center">Pretraga u tijeku...</td></tr>');
+
+            $("#pager").empty();
+        }
+    </script>
 }

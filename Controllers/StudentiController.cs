@@ -1,4 +1,5 @@
-﻿using Paup_2023.Models;
+﻿using PagedList;
+using Paup_2023.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,17 +22,9 @@ namespace Paup_2023.Controllers
         
         public ActionResult Popis(string naziv, string spol, string smjer)
         {
-            var studenti = bazaPodataka.PopisStudenata.ToList();
             var smjeroviList = bazaPodataka.PopisSmjerova.OrderBy(x => x.Naziv).ToList();
             ViewBag.Smjerovi = smjeroviList;
-            //filtriranje
-            if (!String.IsNullOrWhiteSpace(naziv))
-                studenti = studenti.Where(x => x.PrezimeIme.ToUpper().Contains(naziv.ToUpper())).ToList();
-            if (!String.IsNullOrWhiteSpace(spol))
-                studenti = studenti.Where(x => x.Spol == spol).ToList();
-            if(!String.IsNullOrWhiteSpace(smjer))
-                studenti = studenti.Where(x => x.SifraSmjer == smjer).ToList();
-            return View(studenti);
+            return View();
         }
 
         //int? definiramo da parametar id može biti nullabilan
@@ -179,6 +172,47 @@ namespace Paup_2023.Controllers
             bazaPodataka.PopisStudenata.Remove(s);
             bazaPodataka.SaveChanges();
             return View("BrisiStatus");
+        }
+
+        public ActionResult PopisPartial(string naziv, string spol, string smjer, string sort, int? page)
+        {
+            ViewBag.Sortiranje = sort;
+            ViewBag.NazivSort = String.IsNullOrEmpty(sort) ? "naziv_desc" : "";
+            ViewBag.SmjerSort = sort == "smjer" ? "smjer_desc" : "smjer";
+            ViewBag.Smjer = smjer;
+            ViewBag.Naziv = naziv;
+            ViewBag.Spol = spol;
+
+            var studenti = bazaPodataka.PopisStudenata.ToList();
+            var smjeroviList = bazaPodataka.PopisSmjerova.OrderBy(x => x.Naziv).ToList();
+            ViewBag.Smjerovi = smjeroviList;
+            //filtriranje
+            if (!String.IsNullOrWhiteSpace(naziv))
+                studenti = studenti.Where(x => x.PrezimeIme.ToUpper().Contains(naziv.ToUpper())).ToList();
+            if (!String.IsNullOrWhiteSpace(spol))
+                studenti = studenti.Where(x => x.Spol == spol).ToList();
+            if (!String.IsNullOrWhiteSpace(smjer))
+                studenti = studenti.Where(x => x.SifraSmjer == smjer).ToList();
+            
+            switch(sort)
+            {
+                case "naziv_desc":
+                    studenti = studenti.OrderByDescending(s => s.PrezimeIme).ToList();
+                    break;
+                case "smjer":
+                    studenti = studenti.OrderBy(s => s.SifraSmjer).ToList();
+                    break;
+                case "smjer_desc":
+                    studenti = studenti.OrderByDescending(s => s.SifraSmjer).ToList();
+                    break;
+                default:
+                    studenti = studenti.OrderBy(s => s.PrezimeIme).ToList();
+                    break;
+            }
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            
+            return PartialView("_PartialPopis", studenti.ToPagedList(pageNumber, pageSize));
         }
     }
 }
