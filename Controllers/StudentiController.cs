@@ -9,17 +9,19 @@ using System.Web.Mvc;
 
 namespace Paup_2023.Controllers
 {
+    [Authorize]
     public class StudentiController : Controller
     {
         BazaDbContext bazaPodataka = new BazaDbContext();
         // GET: Studenti
+        [AllowAnonymous]
         public ActionResult Index()
         {
             ViewBag.Title = "Početna o studentima";
             ViewBag.Fakultet = "Međimursko veleučilište";
             return View();
         }
-        
+        [AllowAnonymous]
         public ActionResult Popis(string naziv, string spol, string smjer)
         {
             var smjeroviList = bazaPodataka.PopisSmjerova.OrderBy(x => x.Naziv).ToList();
@@ -173,7 +175,7 @@ namespace Paup_2023.Controllers
             bazaPodataka.SaveChanges();
             return View("BrisiStatus");
         }
-
+        [AllowAnonymous]
         public ActionResult PopisPartial(string naziv, string spol, string smjer, string sort, int? page)
         {
             ViewBag.Sortiranje = sort;

@@ -24,7 +24,10 @@
                     <li>@Html.ActionLink("Početna", "Index", "Home")</li>
                     <li>@Html.ActionLink("Studenti", "Index", "Studenti")</li>
                     <li>@Html.ActionLink("Smjerovi", "Index", "Smjerovi")</li>
-                    <li>@Html.ActionLink("Korisnici", "Index", "Korisnici")</li>
+                    @if (User.Identity.IsAuthenticated && (User as LogiraniKorisnik).IsInRole(OvlastiKorisnik.Administrator))
+                    {
+                        <li>@Html.ActionLink("Korisnici", "Index", "Korisnici")</li>
+                    }
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (User.Identity.IsAuthenticated)

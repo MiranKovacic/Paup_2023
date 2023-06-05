@@ -10,6 +10,7 @@ using System.Web.Security;
 
 namespace Paup_2023.Controllers
 {
+    [Authorize(Roles = OvlastiKorisnik.Administrator)]
     public class KorisniciController : Controller
     {
         BazaDbContext bazaPodataka = new BazaDbContext();
@@ -70,6 +71,8 @@ namespace Paup_2023.Controllers
             return View(model);
         }
 
+        [OverrideAuthorization]
+        [Authorize]
         public ActionResult Odjava()
         {
             FormsAuthentication.SignOut();

@@ -1,4 +1,5 @@
 ﻿@using Paup_2023.Models
+@using Paup_2023.Misc
 @model List<Student>
 @{
     ViewBag.Title = "Popis";
@@ -13,48 +14,53 @@
 }
 
 <h2>Popis studenata</h2>
-<a href="@Url.Action("Azuriraj", "Studenti")" class="btn btn-success">
-    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Kreiraj novog studenta
-</a>
-
-<br />
-<br />
-
-@using (Ajax.BeginForm("PopisPartial", "Studenti", ajaxOpt, new { @class = "form-inline", id = "formPopisStudenata" }))
+@if (User.Identity.IsAuthenticated &&
+    ((User as LogiraniKorisnik).IsInRole(OvlastiKorisnik.Administrator) ||
+    (User as LogiraniKorisnik).IsInRole(OvlastiKorisnik.Moderator)))
 {
-    @Html.TextBox("naziv", "", new { @class = "form-control", placeholder = "Naziv studenta" })
-    @Html.DropDownList("Smjer",
-    new SelectList(ViewBag.Smjerovi, "Sifra", "Naziv", ""), "Svi Smjerovi",
-    new { @class = "form-control", style = "margin-left: 10px;" })
-    <div class="form-control" style="margin-left: 10px;">
-        <label class="radio-inline">
-            @Html.RadioButton("spol", "M") Muški
-        </label>
-        <label class="radio-inline">
-            @Html.RadioButton("spol", "Z") Ženski
-        </label>
-        <label class="radio-inline">
-            @Html.RadioButton("spol", "") Svi
-        </label>
-    </div>
-    <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-        Traži
-    </button>
+    <a href="@Url.Action("Azuriraj", "Studenti")" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Kreiraj novog studenta
+    </a>
 }
 
-<br />
-@{
-    Html.RenderAction("PopisPartial", new { naziv = "", spol = "", smjerovi = "" });
-}
-@section Scripts{
-    <script type="text/javascript">
-        function LoadingRow() {
-            $("#tableStudenti tbody").empty();
+    <br />
+    <br />
 
-            $("#tableStudenti tbody").append('<tr><td colspan="7" style="text-align: center">Pretraga u tijeku...</td></tr>');
+    @using (Ajax.BeginForm("PopisPartial", "Studenti", ajaxOpt, new { @class = "form-inline", id = "formPopisStudenata" }))
+    {
+        @Html.TextBox("naziv", "", new { @class = "form-control", placeholder = "Naziv studenta" })
+        @Html.DropDownList("Smjer",
+        new SelectList(ViewBag.Smjerovi, "Sifra", "Naziv", ""), "Svi Smjerovi",
+        new { @class = "form-control", style = "margin-left: 10px;" })
+        <div class="form-control" style="margin-left: 10px;">
+            <label class="radio-inline">
+                @Html.RadioButton("spol", "M") Muški
+            </label>
+            <label class="radio-inline">
+                @Html.RadioButton("spol", "Z") Ženski
+            </label>
+            <label class="radio-inline">
+                @Html.RadioButton("spol", "") Svi
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            Traži
+        </button>
+    }
 
-            $("#pager").empty();
-        }
-    </script>
-}
+    <br />
+    @{
+        Html.RenderAction("PopisPartial", new { naziv = "", spol = "", smjerovi = "" });
+    }
+    @section Scripts{
+        <script type="text/javascript">
+            function LoadingRow() {
+                $("#tableStudenti tbody").empty();
+
+                $("#tableStudenti tbody").append('<tr><td colspan="7" style="text-align: center">Pretraga u tijeku...</td></tr>');
+
+                $("#pager").empty();
+            }
+        </script>
+    }

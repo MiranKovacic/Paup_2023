@@ -1,4 +1,5 @@
 ﻿@using Paup_2023.Models
+@using Paup_2023.Misc
 @using PagedList.Mvc
 @model PagedList.IPagedList<Student>
 @{
@@ -18,9 +19,13 @@
                 <th>Id</th>
                 <th>
                     @Ajax.ActionLink("Prezime", "PopisPartial",
-                   new { smjer = ViewBag.Smjer, naziv = ViewBag.Nsziv,
+                   new
+                        {
+                            smjer = ViewBag.Smjer,
+                            naziv = ViewBag.Nsziv,
                    spol = ViewBag.Spol,
-                   sort = ViewBag.NazivSort }, ajaxOpt)
+                   sort = ViewBag.NazivSort
+                        }, ajaxOpt)
                 </th>
                 <th>Ime</th>
                 <th>Oib</th>
@@ -33,27 +38,37 @@
                                spol = ViewBag.Spol,
                                sort = ViewBag.SmjerSort
                         }, ajaxOpt)
-                            </th>
+                </th>
                 <th>Redovni</th>
-                <th>Akcije</th>
-            </tr>
+                @if (User.Identity.IsAuthenticated &&
+                ((User as LogiraniKorisnik).IsInRole(OvlastiKorisnik.Administrator) ||
+                (User as LogiraniKorisnik).IsInRole(OvlastiKorisnik.Moderator)))
+                {
+                    <th>Akcije</th>
+                }
+                </tr>
         </thead>
         <tbody>
             @if (Model.Any())
             {
             foreach (var student in Model)
             {
-                <tr>
-                    <td>@student.Id</td>
-                    <td>@student.Prezime</td>
-                    <td>@student.Ime</td>
-                    <td>@student.Oib</td>
-                    <td>@(student.UpisaniSmjer?.Naziv)</td>
-                    <td>@Html.CheckBox("chbRedovan", student.RedovanStudent)</td>
+            <tr>
+                <td>@student.Id</td>
+                <td>@student.Prezime</td>
+                <td>@student.Ime</td>
+                <td>@student.Oib</td>
+                <td>@(student.UpisaniSmjer?.Naziv)</td>
+                <td>@Html.CheckBox("chbRedovan", student.RedovanStudent)</td>
+                @if (User.Identity.IsAuthenticated &&
+                ((User as LogiraniKorisnik).IsInRole(OvlastiKorisnik.Administrator) ||
+                (User as LogiraniKorisnik).IsInRole(OvlastiKorisnik.Moderator)))
+                {
                     <td>@Html.ActionLink("Info", "Detalji", new { id = student.Id }, new { @class = "btn btn-info btn-sm" })</td>
                     <td>@Html.ActionLink("Ažuriraj", "Azuriraj", new { id = student.Id }, new { @class = "btn btn-warning btn-sm" })</td>
                     <td>@Html.ActionLink("Izbriši", "Brisi", new { id = student.Id }, new { @class = "btn btn-danger btn-sm" })</td>
-                </tr>
+                }
+            </tr>
             }
             }
             else
