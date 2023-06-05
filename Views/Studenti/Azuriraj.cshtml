@@ -13,7 +13,7 @@ else
     <h3>@Model.Ime @Model.Prezime </h3>
 }
 
-@using (Html.BeginForm("Azuriraj", "Studenti", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Azuriraj", "Studenti", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "Ispravite podatke!");
@@ -99,6 +99,14 @@ else
            new SelectList(ViewBag.Smjerovi, "Sifra", "Naziv", ""), new { @class = "form-control"})
 
             @Html.ValidationMessageFor(mocel => Model.SifraSmjer, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @Html.HiddenFor(model => model.SlikaPutanja)
+    <div class="form-group">
+        @Html.LabelFor(model => model.SlikaPutanja, new { @class = "col-sm-2 control-label"})
+        <div class="col-sm-10">
+            <input type="file" name="ImageFile", class="form-control" />
+            @Html.ValidationMessageFor(model => model.SlikaPutanja, "", new { @class= "text-danger"})
         </div>
     </div>
     <!--Button a spremanje -->

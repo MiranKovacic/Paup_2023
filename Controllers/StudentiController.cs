@@ -2,6 +2,7 @@
 using Paup_2023.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -104,6 +105,23 @@ namespace Paup_2023.Controllers
             //u to polje na formi, neće proći validaciju i 
             //preusmjerit će korisnika na stranicu za ažuriranje
             // ispisati grešku validacije
+            if (s.ImageFile != null)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(s.ImageFile.FileName);
+                string extension = Path.GetExtension(s.ImageFile.FileName);
+
+                if (extension == ".jpg" || extension == ".jepg" || extension == ".png")
+                {
+                    fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                    s.SlikaPutanja = "~/Images/" + fileName;
+                    fileName = Path.Combine(Server.MapPath("~/Images/"), fileName);
+                    s.ImageFile.SaveAs(fileName);
+                }
+                else
+                {
+                    ModelState.AddModelError("SlikaPutanja", "Nepodržana ekstenzija");
+                }
+            }
             if (ModelState.IsValid)
             {
                 //ako je id u objektu s različit od 0 radi se o ažurianju studenta

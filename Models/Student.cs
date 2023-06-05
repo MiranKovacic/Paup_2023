@@ -61,5 +61,10 @@ namespace Paup_2023.Models
         [ForeignKey("UpisaniSmjer")]
         public string SifraSmjer { get; set; }
         public virtual Smjer UpisaniSmjer { get; set; }
+        [Display(Name = "Fotografija")]
+        [Column("slika")]
+        public string SlikaPutanja { get; set; }
+        [NotMapped]
+        public HttpPostedFileBase ImageFile { get; set; }
     }
 }
